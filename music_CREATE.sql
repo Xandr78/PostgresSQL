@@ -53,3 +53,8 @@ create table if not exists track_collection(
 	constraint pk_tc primary key (track_id, collection_id)
 );
 
+alter table album alter column date_album type integer using (date_album::integer);
+
+alter table track alter column duration_track type integer using (duration_track::integer);
+
+alter table collection alter column date_collection type integer using (date_collection::integer);
