@@ -30,11 +30,14 @@ join genre_executor as ge on g.id = ge.genre_id
 group by g.name_genre 
 
 --Количество треков, вошедших в альбомы 2019–2020 годов.
-select a.name_album, count(t.id) from album a 
+select count(t.id) from album a 
 join track t on t.album_id = a.id 
---where a.date_album = 2019  and a.date_album = 2020
-where a.date_album  between 2019 and 2020
-group by a.name_album;
+where a.date_album  between 2019 and 2020;
+
+--select a.name_album, count(t.id) from album a 
+--join track t on t.album_id = a.id 
+--where a.date_album  between 2019 and 2020
+--group by a.name_album;
 
 --Средняя продолжительность треков по каждому альбому.
 select a.name_album, avg(t.duration_track) from album a
@@ -42,11 +45,17 @@ join track t on a.id = t.album_id
 group by a.name_album;
 
 --Все исполнители, которые не выпустили альбомы в 2020 году.
-select name_executor  from executor e 
-join album_executor ae on ae.executor_id = e.id 
-join album a on a.id = ae.album_id 
-where a.date_album <> 2020
-group by e.name_executor;
+select name_executor from executor e
+where e.name_executor not in (select name_executor  from executor e 
+								join album_executor ae on ae.executor_id = e.id 
+								join album a on a.id = ae.album_id 
+								where a.date_album = 2020);
+
+--select name_executor  from executor e 
+--join album_executor ae on ae.executor_id = e.id 
+--join album a on a.id = ae.album_id 
+--where a.date_album <> 2020
+--group by e.name_executor;
 
 --Названия сборников, в которых присутствует конкретный исполнитель (выберите его сами).
 select name_collection, name_executor as "исполнитель из сборника" from collection c 
