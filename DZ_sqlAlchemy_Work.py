@@ -32,23 +32,32 @@ session.commit()
 session.query()
 
 #РАБОТАЕТ!
-def get_shops(s):
-    if s.isdigit():
-        for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher).join(Stock).join(Shop).join(Sale).filter(Publisher.id == s).all():
-            print(f"{tb:<40} {ns:<10} {ps:<8} {ds}")
-    else:
-        for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher).join(Stock).join(Shop).join(Sale).filter(Publisher.name == s).all():
-            print(f"{tb:<40} {ns:<10} {ps:<8} {ds}")
-
-#НЕ РАБОТАЕТ!
 # def get_shops(s):
 #     if s.isdigit():
-#         for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Book.books_publisher).join(Stock.stock_book).join(Sale.sale_stock).join(Shop.shop_stock).filter(Publisher.id == s).all():
+#         for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher).join(Stock).join(Shop).join(Sale).filter(Publisher.id == s).all():
 #             print(f"{tb:<40} {ns:<10} {ps:<8} {ds}")
 #     else:
 #         for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher).join(Stock).join(Shop).join(Sale).filter(Publisher.name == s).all():
 #             print(f"{tb:<40} {ns:<10} {ps:<8} {ds}")
 
+#РАБОТАЕТ!
+# def get_shops(s):
+#     if s.isdigit():
+#         for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher.publisher_book).join(Book.book_stock).join(Stock.stock_sale).join(Stock.stock_shop).filter(Publisher.id == s).all():
+#             print(f"{tb:<40} {ns:<10} {ps:<8} {ds.strftime('%d-%m-%Y')}")
+#     else:
+#         for tb, ns, ps, ds in session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher.publisher_book).join(Book.book_stock).join(Stock.stock_sale).join(Stock.stock_shop).filter(Publisher.name == s).all():
+#             print(f"{tb:<40} {ns:<10} {ps:<8} {ds.strftime('%d-%m-%Y')}")
+
+#БЕЗ ДУБЛИРОВАНИЯ - РАБОТАЕТ!
+def get_shops(s):
+    q = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher.publisher_book).join(Book.book_stock).join(Stock.stock_sale).join(Stock.stock_shop)
+    if s.isdigit():
+        qq = q.filter(Publisher.id == s).all()
+    else:
+        qq = q.filter(Publisher.name == s).all()
+    for tb, ns, ps, ds in qq:
+        print(f"{tb:<40} {ns:<10} {ps:<8} {ds.strftime('%d-%m-%Y')}")
 
 if __name__ == '__main__':
    s = input("Введите имя или айди публициста: ", )
